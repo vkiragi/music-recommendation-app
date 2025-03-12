@@ -1,10 +1,14 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
 
-export async function GET(req) {
+export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("query");
+
+    if (!query) {
+      return NextResponse.json({ error: "No query provided" }, { status: 400 });
+    }
 
     // Get access token from our token API route
     const tokenRes = await axios.get(
@@ -22,6 +26,9 @@ export async function GET(req) {
 
     return NextResponse.json(response.data);
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: (error as Error).message },
+      { status: 500 }
+    );
   }
 }

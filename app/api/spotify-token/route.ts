@@ -7,8 +7,8 @@ export async function GET() {
       "https://accounts.spotify.com/api/token",
       new URLSearchParams({
         grant_type: "client_credentials",
-        client_id: process.env.SPOTIFY_CLIENT_ID,
-        client_secret: process.env.SPOTIFY_CLIENT_SECRET,
+        client_id: process.env.SPOTIFY_CLIENT_ID!,
+        client_secret: process.env.SPOTIFY_CLIENT_SECRET!,
       }).toString(),
       {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -17,6 +17,9 @@ export async function GET() {
 
     return NextResponse.json({ accessToken: tokenResponse.data.access_token });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: (error as Error).message },
+      { status: 500 }
+    );
   }
 }
